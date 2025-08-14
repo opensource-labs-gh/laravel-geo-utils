@@ -126,7 +126,6 @@ class GeoHelperTest extends TestCase
             'min_lng' => 1,
             'max_lng' => 5,
         ];
-        
 
         $this->assertEquals($expected, $boundingBox);
     }
