@@ -2,45 +2,42 @@ name: Tests & Coverage
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up PHP 8.2 with Xdebug
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
-          extensions: mbstring, bcmath, xdebug
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql, xdebug
           coverage: xdebug
 
       - name: Install dependencies
-        run: |
-          composer require "phpunit/phpunit:^11.5.3" --dev --no-update
-          composer require "illuminate/support:12.*" "illuminate/database:12.*" "orchestra/testbench:^10.0" --dev --no-update
-          composer update --prefer-dist --no-interaction --no-progress
+        run: composer install --no-interaction --prefer-dist
 
-      - name: Run PHPUnit tests with coverage
+      - name: Run PHPUnit with coverage (ignore warnings)
         run: |
-          vendor/bin/phpunit --testdox \
+          vendor/bin/phpunit \
             --coverage-html coverage \
-            --fail-on-warning=0 \
+            --coverage-clover coverage.xml \
             || true
 
-      - name: Upload coverage report artifact
+      - name: Upload HTML coverage as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
+          name: html-coverage
           path: coverage
 
-      - name: Upload coverage to GitHub Pages
+      - name: Deploy coverage to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
