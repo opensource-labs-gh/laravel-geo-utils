@@ -2,9 +2,9 @@ name: Tests & Coverage
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
 
 jobs:
   test:
@@ -17,28 +17,25 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: mbstring, bcmath, pdo_mysql, xdebug
+          php-version: 8.2
           coverage: xdebug
+          extensions: mbstring, pdo, sqlite, bcmath
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --prefer-dist --no-progress
 
-      - name: Run PHPUnit with coverage (ignore warnings)
-        run: |
-          vendor/bin/phpunit \
-            --coverage-html coverage \
-            --coverage-clover coverage.xml \
-            || true
+      - name: Run tests with coverage
+        run: vendor/bin/phpunit --coverage-html coverage
 
-      - name: Upload HTML coverage as artifact
+      - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: html-coverage
+          name: coverage-report
           path: coverage
 
       - name: Deploy coverage to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./coverage
+          publish_dir: coverage
