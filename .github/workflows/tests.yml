@@ -7,11 +7,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        php: [8.2]
-
+        php: [8.1, 8.2, 8.3]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,8 +22,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: |
-          composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Run tests
-        run: php artisan geo-utils:test
+        run: vendor/bin/phpunit --testdox
