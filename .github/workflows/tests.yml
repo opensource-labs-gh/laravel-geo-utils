@@ -54,7 +54,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, pdo, sqlite, pdo_sqlite, bcmath
-          coverage: none
+          coverage: xdebug # <— enables code coverage
 
       - name: Install dependencies
         run: |
