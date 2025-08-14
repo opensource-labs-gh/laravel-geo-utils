@@ -104,7 +104,8 @@ class GeoHelperTest extends TestCase
         $this->assertGreaterThan(110, $distanceKm);
         $this->assertLessThan(112, $distanceKm);
         
-        $this->assertGreaterThan($distanceKm, $distanceMiles); // Miles should be less than km
+        // $this->assertGreaterThan($distanceKm, $distanceMiles); // Miles should be less than km
+        $this->assertLessThan($distanceKm, $distanceMiles);
         $this->assertGreaterThan($distanceKm * 1000, $distanceMeters); // Meters should be much larger
     }
 
